@@ -17,11 +17,11 @@ use crate::{
 #[command(name = "teller")]
 #[command(about = "A multi provider secret management tool", version, long_about = None)]
 pub struct Cli {
-    /// Path to your teller.yml config
+    /// Path to your teller.yaml config
     #[arg(short, long)]
     pub config: Option<String>,
 
-    /// Path to your teller.yml config
+    /// Path to your teller.yaml config
     #[arg(long)]
     pub verbose: bool,
 
@@ -165,7 +165,7 @@ pub struct ScanArgs {
     pub json: bool,
 }
 
-const DEFAULT_FILE_PATH: &str = ".teller.yml";
+const DEFAULT_FILE_PATH: &str = ".teller.yaml";
 
 #[derive(Debug, Clone, Args)]
 pub struct NewArgs {
