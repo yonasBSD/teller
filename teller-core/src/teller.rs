@@ -130,7 +130,7 @@ impl Teller {
     /// # Errors
     ///
     /// This function will return an error if command fails
-    pub async fn run<'a>(&self, cmd: &[&str], opts: &exec::Opts<'a>) -> Result<Output> {
+    pub async fn run(&self, cmd: &[&str], opts: &exec::Opts<'_>) -> Result<Output> {
         let cmd = shell_words::join(cmd);
         let kvs = self.collect().await?;
         let res = exec::cmd(

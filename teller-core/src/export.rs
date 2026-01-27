@@ -1,8 +1,9 @@
 use std::collections::BTreeMap;
+use std::fmt::Write as _;
 use std::str::FromStr;
+use std::sync::LazyLock;
 
 use csv::WriterBuilder;
-use lazy_static::lazy_static;
 use serde_derive::{Deserialize, Serialize};
 use serde_variant::to_variant_name;
 use strum::EnumIter;
@@ -11,14 +12,12 @@ use teller_providers::config::KV;
 
 use crate::{Error, Result};
 
-lazy_static! {
-    pub static ref POSSIBLE_VALUES: String = {
-        let providers: Vec<String> = Format::iter()
-            .map(|provider| provider.to_string())
-            .collect();
-        providers.join(", ")
-    };
-}
+pub static POSSIBLE_VALUES: LazyLock<String> = LazyLock::new(|| {
+    let providers: Vec<String> = Format::iter()
+        .map(|provider| provider.to_string())
+        .collect();
+    providers.join(", ")
+});
 
 #[derive(Serialize, Deserialize, Debug, Clone, EnumIter)]
 pub enum Format {
@@ -49,7 +48,7 @@ impl FromStr for Format {
             .collect::<BTreeMap<String, Self>>();
 
         providers.get(input).map_or_else(
-            || Err(&POSSIBLE_VALUES as &'static str),
+            || Err(POSSIBLE_VALUES.as_str()),
             |provider| Ok(provider.clone()),
         )
     }
@@ -75,7 +74,7 @@ impl Format {
         out.push_str("#!/bin/sh\n");
 
         for kv in kvs {
-            out.push_str(&format!("export {}='{}'\n", kv.key, kv.value));
+            let _ = writeln!(out, "export {}='{}'", kv.key, kv.value);
         }
         out
     }
@@ -83,7 +82,7 @@ impl Format {
     fn export_env(kvs: &[KV]) -> String {
         let mut out = String::new();
         for kv in kvs {
-            out.push_str(&format!("{}={}\n", kv.key, kv.value));
+            let _ = writeln!(out, "{}={}", kv.key, kv.value);
         }
         out
     }

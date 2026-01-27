@@ -45,8 +45,7 @@ pub async fn run(teller: &Teller, args: &ScanArgs) -> Result<Response> {
                 Cell::new(
                     m.query
                         .provider
-                        .map_or_else(|| "n/a".to_string(), |p| p.kind.to_string())
-                        .to_string(),
+                        .map_or_else(|| "n/a".to_string(), |p| p.kind.to_string()),
                 ),
                 Cell::new(m.query.path.map_or_else(|| "n/a".to_string(), |p| p.path)),
             ]);

@@ -98,7 +98,7 @@ impl Provider for Inmem {
     async fn get(&self, pm: &PathMap) -> Result<Vec<KV>> {
         let store = self.store.lock().unwrap();
         let data = store.get(&pm.path).ok_or_else(|| Error::NotFound {
-            path: pm.path.to_string(),
+            path: pm.path.clone(),
             msg: "not found".to_string(),
         })?;
         Ok(KV::from_data(data, pm, &self.kind()))

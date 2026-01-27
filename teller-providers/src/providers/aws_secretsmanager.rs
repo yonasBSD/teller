@@ -42,7 +42,7 @@ fn handle_get_err(
         GetSecretValueError::ResourceNotFoundException(_) => {
             if mode == &Mode::Get {
                 Err(Error::NotFound {
-                    path: pm.path.to_string(),
+                    path: pm.path.clone(),
                     msg: "not found".to_string(),
                 })
             } else {
@@ -53,12 +53,12 @@ fn handle_get_err(
         e => {
             if e.to_string().contains("marked deleted") {
                 Err(Error::NotFound {
-                    path: pm.path.to_string(),
+                    path: pm.path.clone(),
                     msg: "not found".to_string(),
                 })
             } else {
                 Err(Error::GetError {
-                    path: pm.path.to_string(),
+                    path: pm.path.clone(),
                     msg: e.to_string(),
                 })
             }
@@ -73,7 +73,7 @@ fn handle_del_err(e: SdkError<DeleteSecretError>, pm: &PathMap) -> Result<()> {
             Ok(())
         }
         e => Err(Error::DeleteError {
-            path: pm.path.to_string(),
+            path: pm.path.clone(),
             msg: e.to_string(),
         }),
     }
@@ -207,8 +207,7 @@ async fn put_data(
                 msg: e.to_string(),
                 path: pm.path.clone(),
             })?;
-    };
-
+    }
     Ok(())
 }
 

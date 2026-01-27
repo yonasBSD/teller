@@ -185,7 +185,7 @@ impl Provider for Etcd {
                     .await
                     .map_err(|err| to_err(pm, err))?;
             }
-        };
+        }
         drop(client);
 
         Ok(())

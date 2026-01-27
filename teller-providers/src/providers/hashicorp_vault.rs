@@ -183,7 +183,7 @@ async fn put_data(
         )
         .await
         .map_err(|e| xerr(pm, e))?;
-    };
+    }
     Ok(())
 }
 
@@ -201,7 +201,7 @@ impl Provider for Hashivault {
             &get_data(&self.client, pm).await.map_err(|e| match e {
                 Error::NotFound { path, msg } => Error::NotFound { path, msg },
                 _ => Error::GetError {
-                    path: pm.path.to_string(),
+                    path: pm.path.clone(),
                     msg: e.to_string(),
                 },
             })?,
@@ -214,7 +214,7 @@ impl Provider for Hashivault {
         let mut data = get_data_or_empty(&self.client, pm)
             .await
             .map_err(|e| Error::PutError {
-                path: pm.path.to_string(),
+                path: pm.path.clone(),
                 msg: e.to_string(),
             })?;
         for kv in kvs {
@@ -223,7 +223,7 @@ impl Provider for Hashivault {
         put_data(&self.client, pm, &data)
             .await
             .map_err(|e| Error::PutError {
-                path: pm.path.to_string(),
+                path: pm.path.clone(),
                 msg: e.to_string(),
             })?;
         Ok(())
@@ -238,7 +238,7 @@ impl Provider for Hashivault {
                 get_data_or_empty(&self.client, pm)
                     .await
                     .map_err(|e| Error::DeleteError {
-                        path: pm.path.to_string(),
+                        path: pm.path.clone(),
                         msg: e.to_string(),
                     })?;
             for key in pm.keys.keys() {
@@ -247,7 +247,7 @@ impl Provider for Hashivault {
             put_data(&self.client, pm, &data)
                 .await
                 .map_err(|e| Error::DeleteError {
-                    path: pm.path.to_string(),
+                    path: pm.path.clone(),
                     msg: e.to_string(),
                 })?;
             return Ok(());
@@ -260,7 +260,7 @@ impl Provider for Hashivault {
                 .await
                 .map_err(|e| xerr(pm, e))
                 .map_err(|e| Error::DeleteError {
-                    path: pm.path.to_string(),
+                    path: pm.path.clone(),
                     msg: e.to_string(),
                 })?;
         } else {
@@ -268,10 +268,10 @@ impl Provider for Hashivault {
                 .await
                 .map_err(|e| xerr(pm, e))
                 .map_err(|e| Error::DeleteError {
-                    path: pm.path.to_string(),
+                    path: pm.path.clone(),
                     msg: e.to_string(),
                 })?;
-        };
+        }
         Ok(())
     }
 }

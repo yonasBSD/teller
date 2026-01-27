@@ -80,7 +80,7 @@ impl HashiCorpConsul {
             .as_ref()
             .map_or_else(
                 || env::var("CONSUL_HTTP_ADDR"),
-                |address| Ok(address.to_string()),
+                |address| Ok(address.clone()),
             )
             .map_err(|_| Error::Message("Consul address not present.".to_string()))?;
 
@@ -89,7 +89,7 @@ impl HashiCorpConsul {
             .as_ref()
             .map_or_else(
                 || env::var("CONSUL_HTTP_TOKEN"),
-                |token| Ok(token.to_string()),
+                |token| Ok(token.clone()),
             )
             .unwrap_or_default();
 
@@ -131,7 +131,7 @@ impl Provider for HashiCorpConsul {
         let mut results = vec![];
         for kv_pair in res.response {
             let val = kv_pair.value.ok_or_else(|| Error::NotFound {
-                path: pm.path.to_string(),
+                path: pm.path.clone(),
                 msg: "value not found".to_string(),
             })?;
 

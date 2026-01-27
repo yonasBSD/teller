@@ -15,6 +15,7 @@
 //!
 //!
 #![allow(clippy::borrowed_box)]
+use std::fmt::Write as _;
 use std::fs::File;
 use std::io::prelude::*;
 use std::{
@@ -74,13 +75,13 @@ fn load(path: &Path, mode: &Mode) -> Result<BTreeMap<String, String>> {
 
     if mode == &Mode::Get {
         let metadata = content.metadata().map_err(|e| Error::GetError {
-            path: format!("{path:?}"),
+            path: path.display().to_string(),
             msg: format!("could not get file metadata. err: {e:?}"),
         })?;
 
         if metadata.len() == 0 {
             return Err(Error::NotFound {
-                path: format!("{path:?}"),
+                path: path.display().to_string(),
                 msg: "file is empty".to_string(),
             });
         }
@@ -88,7 +89,7 @@ fn load(path: &Path, mode: &Mode) -> Result<BTreeMap<String, String>> {
 
     for res in dotenvy::Iter::new(&content) {
         let (k, v) = res.map_err(|e| Error::GetError {
-            path: format!("{path:?}"),
+            path: path.display().to_string(),
             msg: e.to_string(),
         })?;
         env.insert(k, v);
@@ -109,11 +110,11 @@ fn save(path: &Path, data: &BTreeMap<String, String>) -> Result<String> {
             None
         };
 
-        let value = json_value.unwrap_or_else(|| v.to_string());
+        let value = json_value.unwrap_or_else(|| v.clone());
         if value.chars().any(char::is_whitespace) && !value.starts_with(['"', '\'']) {
-            out.push_str(&format!("{k}=\"{value}\"\n"));
+            let _ = writeln!(out, "{k}=\"{value}\"");
         } else {
-            out.push_str(&format!("{k}={value}\n"));
+            let _ = writeln!(out, "{k}={value}");
         }
     }
 
@@ -141,7 +142,7 @@ impl Provider for Dotenv {
             pm,
             |data| {
                 for kv in kvs {
-                    data.insert(kv.key.to_string(), kv.value.to_string());
+                    data.insert(kv.key.clone(), kv.value.clone());
                 }
             },
             &Mode::Put,
@@ -175,8 +176,8 @@ impl Dotenv {
     {
         if mode == &Mode::Put && self.opts.create_on_put {
             Self::create_empty_file(&pm.path).map_err(|e| Error::GetError {
-                path: format!("{:?}", pm.path),
-                msg: format!("could not create file: {:?}. err: {e:?}", pm.path),
+                path: pm.path.clone(),
+                msg: format!("could not create file: {}. err: {e:?}", pm.path),
             })?;
         }
         let file = Path::new(&pm.path);

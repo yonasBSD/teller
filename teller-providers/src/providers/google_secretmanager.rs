@@ -302,7 +302,7 @@ impl Provider for GoogleSecretManager {
 
         if out.is_empty() {
             return Err(Error::NotFound {
-                path: pm.path.to_string(),
+                path: pm.path.clone(),
                 msg: "path not found".to_string(),
             });
         }

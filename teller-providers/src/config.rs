@@ -124,7 +124,7 @@ impl KV {
             from_key: from_key.to_string(),
             path: Some(PathInfo {
                 path: pm.path.clone(),
-                id: pm.id.to_string(),
+                id: pm.id.clone(),
             }),
             provider: Some(provider),
             meta: Some(MetaInfo {

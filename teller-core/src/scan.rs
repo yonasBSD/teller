@@ -28,8 +28,7 @@ fn get_visual_position(text: &[u8], byte_position: usize) -> Option<(usize, usiz
         .iter()
         .take(byte_position)
         .rposition(|c| *c == b'\n')
-        .map(|pos| pos + 1)
-        .unwrap_or(0);
+        .map_or(0, |pos| pos + 1);
 
     let len = UnicodeWidthStr::width(
         String::from_utf8_lossy(&text[last_ln_start..byte_position]).as_ref(),

@@ -1,6 +1,7 @@
-use std::{collections::HashMap, str::FromStr};
+use std::collections::HashMap;
+use std::str::FromStr;
+use std::sync::LazyLock;
 
-use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 use serde_variant::to_variant_name;
 use strum::{EnumIter, IntoEnumIterator};
@@ -30,14 +31,12 @@ pub mod hashicorp_consul;
 #[cfg(feature = "etcd")]
 pub mod etcd;
 
-lazy_static! {
-    pub static ref PROVIDER_KINDS: String = {
-        let providers: Vec<String> = ProviderKind::iter()
-            .map(|provider| provider.to_string())
-            .collect();
-        providers.join(", ")
-    };
-}
+pub static PROVIDER_KINDS: LazyLock<String> = LazyLock::new(|| {
+    let providers: Vec<String> = ProviderKind::iter()
+        .map(|provider| provider.to_string())
+        .collect();
+    providers.join(", ")
+});
 #[derive(
     Serialize, Deserialize, Debug, Clone, Default, PartialOrd, Ord, PartialEq, Eq, EnumIter,
 )]
@@ -90,7 +89,7 @@ impl FromStr for ProviderKind {
             .collect::<HashMap<String, Self>>();
 
         providers.get(input).map_or_else(
-            || Err(&PROVIDER_KINDS as &'static str),
+            || Err(PROVIDER_KINDS.as_str()),
             |provider| Ok(provider.clone()),
         )
     }

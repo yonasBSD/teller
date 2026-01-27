@@ -113,7 +113,7 @@ impl AppConfig {
             match providers.get(*provider_name) {
                 Some(p) => selected.push(p.clone()),
                 _ => return Err(Error::ProviderNotFound((*provider_name).to_string())),
-            };
+            }
         }
 
         Ok(selected)

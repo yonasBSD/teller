@@ -36,7 +36,7 @@ fn handle_delete(e: SdkError<DeleteParameterError>, pm: &PathMap) -> Result<()> 
             Ok(())
         }
         e => Err(Error::DeleteError {
-            path: pm.path.to_string(),
+            path: pm.path.clone(),
             msg: e.to_string(),
         }),
     }
