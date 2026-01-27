@@ -94,8 +94,9 @@ impl HashiCorpConsul {
             consul: Consul::new(rs_consul::Config {
                 address,
                 token: Some(token),
-                #[allow(clippy::default_trait_access)]
-                hyper_builder: Default::default(),
+                hyper_builder: hyper_util::client::legacy::Client::builder(
+                    hyper_util::rt::TokioExecutor::new(),
+                ),
             }),
             opts,
             name: name.to_string(),
@@ -125,7 +126,7 @@ impl Provider for HashiCorpConsul {
             .map_err(|e| to_err(pm, e))?;
 
         let mut results = vec![];
-        for kv_pair in res {
+        for kv_pair in res.response {
             let val = kv_pair.value.ok_or_else(|| Error::NotFound {
                 path: pm.path.to_string(),
                 msg: "value not found".to_string(),
@@ -170,6 +171,7 @@ impl Provider for HashiCorpConsul {
                 })
                 .await
                 .map_err(|e| to_err(pm, e))?
+                .response
                 .iter()
                 .map(|resp| resp.key.clone())
                 .collect::<Vec<_>>()
@@ -180,10 +182,10 @@ impl Provider for HashiCorpConsul {
                 .collect::<Vec<_>>()
         };
 
-        for key in keys {
+        for key in &keys {
             self.consul
                 .delete_key(rs_consul::DeleteKeyRequest {
-                    key: &key,
+                    key,
                     datacenter: &self.opts.dc.clone().unwrap_or_default(),
                     ..Default::default()
                 })

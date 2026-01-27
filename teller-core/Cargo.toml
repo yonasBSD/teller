@@ -19,11 +19,11 @@ serde_variant = { workspace = true }
 lazy_static = { workspace = true }
 strum = { workspace = true }
 shell-words = "1"
-duct = "0.13.6"
+duct = "1.1.1"
 thiserror = { workspace = true }
-fs-err = "2.9.0"
+fs-err = "3.2.2"
 ignore = "0.4.22"
-unicode-width = "0.1.12"
+unicode-width = "0.2.2"
 aho-corasick = { workspace = true }
 tera = { workspace = true }
 csv = "1.2.1"
