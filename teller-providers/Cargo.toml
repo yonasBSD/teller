@@ -43,6 +43,7 @@ serde_derive = { workspace = true }
 strum = { workspace = true }
 thiserror = { workspace = true }
 hyper-util = { version = "0.1", features = ["client-legacy"] }
+rustls = { version = "0.23", features = ["ring"] }
 fs-err = "3"
 home = "0.5"
 hyper = "1.8.1"
