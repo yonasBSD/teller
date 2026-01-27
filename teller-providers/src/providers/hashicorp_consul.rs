@@ -70,6 +70,9 @@ impl HashiCorpConsul {
     ///
     /// This function will return an error if cannot create a provider
     pub fn new(name: &str, opts: Option<HashiCorpConsulOptions>) -> Result<Self> {
+        rustls::crypto::ring::default_provider()
+            .install_default()
+            .ok();
         let opts = opts.unwrap_or_default();
 
         let address = opts

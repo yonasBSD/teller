@@ -229,7 +229,8 @@ mod tests {
         #[cfg(not(target_arch = "aarch64"))]
         let image_name = "bitnami/etcd";
 
-        let image = Image::with_repository(image_name);
+        let image = Image::with_repository(image_name)
+            .pull_policy(dockertest::PullPolicy::Always);
         let mut etcd_container = Composition::with_image(image)
             .with_container_name("etcd-server")
             .with_env(env)

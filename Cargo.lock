@@ -4110,6 +4110,7 @@ dependencies = [
  "rs-consul",
  "rustify",
  "rustls 0.23.36",
+ "rustls-pki-types",
  "serde",
  "serde_derive",
  "serde_json",
