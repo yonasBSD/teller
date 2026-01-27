@@ -28,6 +28,7 @@ fn get_visual_position(text: &[u8], byte_position: usize) -> Option<(usize, usiz
         .iter()
         .take(byte_position)
         .rposition(|c| *c == b'\n')
+        .map(|pos| pos + 1)
         .unwrap_or(0);
 
     let len = UnicodeWidthStr::width(
@@ -119,8 +120,8 @@ mod tests {
         assert_eq!(get_visual_position(b"", 0), None);
         assert_eq!(get_visual_position(b"a", 1), None);
 
-        assert_eq!(get_visual_position(b"abcde\nfghi", 8), Some((2, 4)));
-        assert_eq!(get_visual_position(b"abcde\r\nfghi", 8), Some((2, 3)));
+        assert_eq!(get_visual_position(b"abcde\nfghi", 8), Some((2, 3)));
+        assert_eq!(get_visual_position(b"abcde\r\nfghi", 8), Some((2, 2)));
 
         let text = r#" 100% ❯ j teller-rs
     /Users/jondot/spikes/teller-rs
@@ -137,7 +138,7 @@ mod tests {
     ~/spikes/teller-rs on  master [!?] via 🦀 v1.73.0-nightly
      100% ❯"#;
         let position = get_visual_position(text.as_bytes(), 438);
-        assert_eq!(position, Some((11, 20)));
+        assert_eq!(position, Some((11, 19)));
     }
 
     #[test]
