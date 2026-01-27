@@ -39,7 +39,9 @@ jobs:
           override: true
 
       - name: Install Protoc
-        uses: arduino/setup-protoc@v3
+        uses: taiki-e/install-action@v2
+        with:
+          tool: protoc
 
       - uses: Swatinem/rust-cache@v2
 
@@ -102,7 +104,9 @@ jobs:
           node-version: 18
 
       - name: Install Protoc
-        uses: arduino/setup-protoc@v3
+        uses: taiki-e/install-action@v2
+        with:
+          tool: protoc
 
       - name: Install ${{ matrix.rust }} toolchain
         uses: actions-rs/toolchain@v1

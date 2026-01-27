@@ -31,6 +31,11 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
 
+      - name: Install Protoc
+        uses: taiki-e/install-action@v2
+        with:
+          tool: protoc
+
       - name: Run cargo test
         uses: actions-rs/cargo@v1
         with:
@@ -56,6 +61,11 @@ jobs:
           components: llvm-tools-preview
 
       - uses: Swatinem/rust-cache@v2
+
+      - name: Install Protoc
+        uses: taiki-e/install-action@v2
+        with:
+          tool: protoc
 
       - name: Download grcov
         run: |
@@ -92,6 +102,11 @@ jobs:
           components: rustfmt, clippy
 
       - uses: Swatinem/rust-cache@v2
+
+      - name: Install Protoc
+        uses: taiki-e/install-action@v2
+        with:
+          tool: protoc
 
       - name: Run cargo fmt
         uses: actions-rs/cargo@v1
